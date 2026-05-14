@@ -1,322 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LingQuest Admin Stats v47 Fresh</title>
-  <style>
-    :root{
-      --bg:#fff8ed;--card:#ffffff;--ink:#17130f;--muted:#756b60;--line:rgba(23,19,15,.12);
-      --green:#1f8f56;--purple:#7f5cff;--amber:#ffb84d;--rose:#ff7e8b;--blue:#3a7bd5;
-    }
-    *{box-sizing:border-box}
-    html,body{max-width:100%;overflow-x:hidden}
-    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(145deg,#fff8ed,#eef6ff);color:var(--ink)}
-    .wrap{max-width:1220px;margin:0 auto;padding:28px}
-    header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:20px}
-    h1{margin:0;font-size:31px;letter-spacing:-.04em}
-    h2,h3{margin:0 0 12px}
-    p{color:var(--muted);line-height:1.5;margin:8px 0 0}
-    .actions{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--ink);color:white}
-    .btn.secondary{background:white;color:var(--ink);border:1px solid var(--line)}
-    .btn.danger{background:#d94848}
-    .status{font-size:13px;color:var(--muted);margin-top:8px}
-    .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
-    .card{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 14px 36px rgba(45,35,25,.08);overflow:hidden}
-    .metric b{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
-    .metric strong{display:block;font-size:32px;margin-top:6px;overflow-wrap:anywhere}
-    .metric span{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
-    .section{margin-top:18px}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .tableScroller{width:100%;overflow-x:auto;border-radius:16px}
-    table{width:100%;min-width:1050px;border-collapse:collapse;font-size:13px;table-layout:fixed}
-    th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
-    th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);white-space:normal}
-    .barrow{margin:12px 0}
-    .barhead{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;min-width:0}
-    .barhead b,.barhead span{overflow-wrap:anywhere}
-    .bar{height:10px;background:#f0e7d8;border-radius:99px;overflow:hidden}
-    .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--purple));border-radius:99px}
-    .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 9px;font-weight:800;font-size:12px;background:#f1eadf;color:#453b31;white-space:normal;max-width:100%;overflow-wrap:anywhere}
-    .pill.green{background:#e9f7ef;color:#14653d}.pill.blue{background:#eef6ff;color:#24588f}.pill.purple{background:#efeaff;color:#5639b5}.pill.amber{background:#fff3cf;color:#8a5c00}.pill.rose{background:#fde8e8;color:#9b3030}
-    .muted{color:var(--muted)}.mini{font-size:12px}.filters{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
-    .filters select,.filters input{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 12px;max-width:100%}
-    .note{font-size:13px;color:var(--muted);margin-top:8px}
-    @media(max-width:980px){.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}header{display:block}.actions{margin-top:12px}}
-    @media(max-width:640px){.grid{grid-template-columns:1fr}.wrap{padding:18px}table{font-size:12px;min-width:920px}}
-  </style>
+    <title>LingQuest Admin - Secure</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .hidden { display: none; }
+        #login-box { text-align: center; margin-top: 100px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #0070f3; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>LingQuest Admin Stats</h1>
-      <p>Live stats refresh automatically every 3 seconds. Fresh project mode: live stats refresh every 3 seconds and every user action is saved as append-only data.</p>
-      <div class="status" id="status">Loading…</div>
+    <div id="login-box">
+        <h2>Admin Girişi</h2>
+        <input type="password" id="passInput" placeholder="Şifre giriniz...">
+        <button onclick="checkLogin()">Giriş Yap</button>
     </div>
-    <div class="actions">
-      <button class="btn secondary" id="refreshBtn">Refresh</button>
-      <button class="btn secondary" id="exportBtn">Export CSV</button>
-      <button class="btn danger" id="clearBtn">Clear data</button>
+
+    <div id="admin-content" class="hidden">
+        <h1>Canlı Veri Akışı (v47)</h1>
+        <div id="stats-container">Veriler yükleniyor...</div>
+        <table id="eventsTable">
+            <thead>
+                <tr>
+                    <th>Zaman</th>
+                    <th>Olay</th>
+                    <th>Detay</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
     </div>
-  </header>
 
-  <section class="grid" id="topMetrics"></section>
+    <script>
+        const SECRET_KEY = "admin123"; // Burayı dilediğin şifre ile değiştirebilirsin
 
-  <section class="section two">
-    <div class="card">
-      <h3>Language distribution</h3>
-      <div id="languageBars"></div>
-    </div>
-    <div class="card">
-      <h3>Track distribution</h3>
-      <div id="trackBars"></div>
-    </div>
-  </section>
+        function checkLogin() {
+            const input = document.getElementById('passInput').value;
+            if (input === SECRET_KEY) {
+                document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                startFetching();
+            } else {
+                alert("Hatalı şifre!");
+            }
+        }
 
-  <section class="section two">
-    <div class="card">
-      <h3>Level distribution</h3>
-      <div id="levelBars"></div>
-    </div>
-    <div class="card">
-      <h3>Topic distribution</h3>
-      <div id="topicBars"></div>
-    </div>
-  </section>
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/events');
+                const data = await res.json();
+                const tbody = document.getElementById('tableBody');
+                tbody.innerHTML = '';
+                
+                data.events.reverse().forEach(ev => {
+                    const row = `<tr>
+                        <td>${new Date(ev.timestamp).toLocaleTimeString()}</td>
+                        <td>${ev.event}</td>
+                        <td>${JSON.stringify(ev.data || {})}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            } catch (e) {
+                console.error("Veri çekme hatası:", e);
+            }
+        }
 
-  <section class="section card">
-    <h3>All user details</h3>
-    <div class="filters">
-      <select id="languageFilter"><option value="">All languages</option></select>
-      <select id="levelFilter"><option value="">All levels</option></select>
-      <select id="trackFilter"><option value="">All tracks</option></select>
-      <input id="searchFilter" placeholder="Search topic/session…" />
-    </div>
-    <div id="sessionTable"></div>
-  </section>
-</div>
-
-<script>
-const APP_STATS_VERSION = "v47";
-const STATS_NAMESPACE = "events-v47";
-const LOCAL_KEY = "lingquest_v47_fresh_stats";
-const $ = id => document.getElementById(id);
-let sessions = [];
-let filtered = [];
-
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
-function pct(a,b){return b ? Math.round((a/b)*100) : 0;}
-function fmtDate(s){
-  if(!s) return "—";
-  try{return new Date(s).toLocaleString("tr-TR");}catch(e){return s;}
-}
-function languageLabel(s){ return s.targetLanguage || s.language || "Unknown"; }
-function levelLabel(s){ return s.level || "—"; }
-function topicLabel(s){ return s.topicTitle || s.topicName || s.topic || "—"; }
-function trackLabel(s){
-  const m = s.exerciseMode || (s.quickMode ? "short_listening_practice_3_4" : s.conversationComplete ? "full_speaking_5_7" : "");
-  if(m === "full_speaking_5_7") return "Long / Full speaking";
-  if(m === "short_listening_practice_3_4") return "Short";
-  return m || "Unknown";
-}
-function isNewStatsSession(s){
-  return !!(s && (s.id || s.sessionId || (s.events && s.events.length)));
-}
-function isCompleted(s){
-  // Completed means the user finished the practice activities OR reached feedback/speaking/save.
-  return !!(s.activitiesComplete || s.activitySummary || s.feedbackViewed || s.completedAt || s.conversationComplete || s.lastEventType === "feedback_viewed" || s.lastEventType === "activities_complete" || s.saveClicked);
-}
-function finishTime(s){ return s.completedAt || s.feedbackAt || s.savedAt || ""; }
-function saveTime(s){ return s.savedAt || ""; }
-
-function normalizePayload(data){
-  let arr = [];
-  if(data && Array.isArray(data.sessions)) arr = data.sessions.map(normalizeSession);
-  else if(data && Array.isArray(data.items)) arr = data.items.map(normalizeSession);
-  else if(data && Array.isArray(data.events)) arr = sessionsFromEvents(data.events);
-  else if(Array.isArray(data)) arr = data.map(normalizeSession);
-  return arr.filter(isNewStatsSession);
-}
-function normalizeSession(s){
-  const out = Object.assign({}, s || {});
-  out.id = out.id || out.sessionId || out._id || "";
-  if(Array.isArray(out.events)){
-    out.events.forEach(e=>{
-      Object.assign(out, e.patch || {});
-      out.lastEventType = e.eventType || out.lastEventType;
-      out.updatedAt = (e.patch && e.patch.updatedAt) || e.createdAt || out.updatedAt;
-    });
-  }
-  return out;
-}
-function sessionsFromEvents(events){
-  const map = {};
-  (events||[]).forEach(e=>{
-    const id = e.sessionId || e.id || e.session_id;
-    if(!id) return;
-    if(!map[id]) map[id] = {id, events:[], startedAt:e.createdAt||e.at||e.updatedAt||""};
-    map[id].events.push(e);
-    Object.assign(map[id], e.patch || {});
-    map[id].lastEventType = e.eventType || e.type || map[id].lastEventType;
-    map[id].updatedAt = (e.patch&&e.patch.updatedAt) || e.updatedAt || e.createdAt || map[id].updatedAt;
-  });
-  return Object.values(map);
-}
-async function loadStats(silent=false){
-  if(!silent) $("status").textContent = "Loading server data…";
-  try{
-    const res = await fetch("/api/events?namespace="+encodeURIComponent(STATS_NAMESPACE)+"&ts="+Date.now(), {cache:"no-store"});
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    const data = await res.json();
-    sessions = normalizePayload(data);
-    const last = new Date().toLocaleTimeString();
-    $("status").textContent = `${sessions.length} session(s) loaded · live refresh every 3s · last update ${last}. ${data.blobCount!==undefined ? "Stats files: "+data.blobCount+"." : ""}`;
-  }catch(err){
-    const local = JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]");
-    sessions = local.map(normalizeSession).filter(isNewStatsSession);
-    $("status").textContent = `Could not read server data (${err.message}). Showing only local data: ${sessions.length} session(s).`;
-  }
-  populateFilters();
-  applyFilters();
-}
-function populateFilters(){
-  fillSelect("languageFilter", [...new Set(sessions.map(languageLabel).filter(Boolean))].sort(), "All languages");
-  fillSelect("levelFilter", [...new Set(sessions.map(levelLabel).filter(Boolean))].sort(), "All levels");
-  fillSelect("trackFilter", [...new Set(sessions.map(trackLabel).filter(Boolean))].sort(), "All tracks");
-}
-function fillSelect(id, values, first){
-  const el = $(id); const cur = el.value;
-  el.innerHTML = `<option value="">${first}</option>` + values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");
-  if(values.includes(cur)) el.value = cur;
-}
-function applyFilters(){
-  const lang = $("languageFilter").value;
-  const level = $("levelFilter").value;
-  const track = $("trackFilter").value;
-  const q = $("searchFilter").value.toLowerCase().trim();
-  filtered = sessions.filter(s=>{
-    if(lang && languageLabel(s)!==lang) return false;
-    if(level && levelLabel(s)!==level) return false;
-    if(track && trackLabel(s)!==track) return false;
-    if(q && !(String(s.id).toLowerCase().includes(q) || topicLabel(s).toLowerCase().includes(q))) return false;
-    return true;
-  });
-  render();
-}
-function render(){
-  const total = filtered.length;
-  const completed = filtered.filter(isCompleted).length;
-  const saved = filtered.filter(s=>s.saveClicked || s.savedAt).length;
-
-  $("topMetrics").innerHTML = [
-    metric("Total visitors", total, "Total visits / sessions"),
-    metric("Solved / completed users", completed, "Finished practice or completed a track"),
-    metric("Save link clicks", saved, "Users who clicked Save my progress"),
-    metric("Save / visitor rate", pct(saved,total)+"%", `${saved}/${total}`),
-    metric("Solved / visitor rate", pct(completed,total)+"%", `${completed}/${total}`)
-  ].join("");
-
-  renderBars("languageBars", groupCount(filtered, languageLabel));
-  renderBars("trackBars", groupCount(filtered, trackLabel));
-  renderBars("levelBars", groupCount(filtered, levelLabel));
-  renderBars("topicBars", groupCount(filtered, topicLabel), 10);
-  renderSessionTable();
-}
-function metric(label, value, sub){
-  return `<div class="card metric"><b>${esc(label)}</b><strong>${esc(value)}</strong><span>${esc(sub)}</span></div>`;
-}
-function groupCount(arr, fn){
-  const m = {};
-  arr.forEach(s=>{ const k = fn(s) || "Unknown"; m[k] = (m[k]||0)+1; });
-  return Object.entries(m).sort((a,b)=>b[1]-a[1]);
-}
-function renderBars(id, entries, limit=20){
-  const shown = entries.slice(0,limit);
-  const max = Math.max(1,...shown.map(x=>x[1]));
-  $(id).innerHTML = shown.length ? shown.map(([k,v])=>`
-    <div class="barrow">
-      <div class="barhead"><b>${esc(k)}</b><span class="muted">${v} users</span></div>
-      <div class="bar"><i style="width:${Math.round(v/max*100)}%"></i></div>
-    </div>`).join("") : `<p class="muted">No data yet. If /api/events has sessions but this table is empty, refresh after redeploy.</p>`;
-}
-function renderSessionTable(){
-  const rows = filtered.slice()
-    .sort((a,b)=>new Date(b.updatedAt||b.savedAt||b.completedAt||b.feedbackAt||b.startedAt||0)-new Date(a.updatedAt||a.savedAt||a.completedAt||a.feedbackAt||a.startedAt||0))
-    .map(s=>{
-      const activity = s.activitySummary || {};
-      const feedback = s.feedbackSummary || {};
-      return [
-        `<span class="mini">${esc((s.id||"").slice(0,22))}</span>`,
-        fmtDate(s.startedAt),
-        fmtDate(finishTime(s)),
-        fmtDate(saveTime(s)),
-        `<span class="pill blue">${esc(languageLabel(s))}</span>`,
-        `<span class="pill purple">${esc(levelLabel(s))}</span>`,
-        esc(topicLabel(s)),
-        `<span class="pill ${trackLabel(s).startsWith("Long") ? "purple" : "amber"}">${esc(trackLabel(s))}</span>`,
-        `${s.listeningComplete?"✅":"—"} listening<br>${s.activitiesComplete||s.activitySummary?"✅":"—"} practice<br>${s.conversationComplete||s.completedAt?"✅":"—"} speaking<br>${isCompleted(s)?"✅":"—"} completed`,
-        s.saveClicked || s.savedAt ? `<span class="pill green">Saved</span>` : "—",
-        `${activity.scorePercent ?? "—"}%`,
-        `${feedback.speakingGrammarPercent ?? "—"}%`
-      ];
-    });
-  $("sessionTable").innerHTML = table(
-    ["Session","Entry time","Finish time","Save time","Language","Level","Topic","Track","Completed steps","Save","Practice score","Speaking score"],
-    rows
-  );
-}
-function table(headers, rows){
-  if(!rows.length) return `<p class="muted">No data yet. If /api/events has sessions but this table is empty, refresh after redeploy.</p>`;
-  return `<div class="tableScroller"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
-}
-function exportCSV(){
-  const headers = ["sessionId","startedAt","completedAt","savedAt","language","level","topic","track","listeningComplete","practiceComplete","speakingComplete","completed","saveClicked","practiceScore","speakingGrammarScore"];
-  const lines = [headers.join(",")].concat(filtered.map(s=>{
-    const activity = s.activitySummary || {};
-    const feedback = s.feedbackSummary || {};
-    const values = [
-      s.id, s.startedAt, finishTime(s), saveTime(s), languageLabel(s), levelLabel(s), topicLabel(s), trackLabel(s),
-      !!s.listeningComplete, !!(s.activitiesComplete||s.activitySummary), !!(s.conversationComplete||s.completedAt),
-      isCompleted(s), !!(s.saveClicked||s.savedAt), activity.scorePercent ?? "", feedback.speakingGrammarPercent ?? ""
-    ];
-    return values.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",");
-  }));
-  const blob = new Blob([lines.join("\n")], {type:"text/csv"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "lingquest_stats.csv";
-  a.click();
-}
-async function clearData(){
-  const ok = confirm("Are you sure you want to clear all new LingQuest stats data? This cannot be undone.");
-  if(!ok) return;
-
-  sessions = [];
-  filtered = [];
-  localStorage.removeItem(LOCAL_KEY);
-  render();
-  $("status").textContent = "The screen was reset. Trying to clear server data…";
-
-  try{
-    let res = await fetch("/api/clear?namespace="+encodeURIComponent(STATS_NAMESPACE)+"&ts="+Date.now(), {method:"POST", cache:"no-store"});
-    if(!res.ok) res = await fetch("/api/clear?namespace="+encodeURIComponent(STATS_NAMESPACE)+"&ts="+Date.now(), {method:"DELETE", cache:"no-store"});
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    const data = await res.json().catch(()=>({}));
-    $("status").textContent = `Data temizlendi. Silinen dosya: ${data.deleted ?? "?"}. Kalan yeni dosya: ${data.remaining ?? "?"}.`;
-    setTimeout(loadStats, 700);
-  }catch(err){
-    $("status").textContent = "The screen was reset. The server clear API could not be reached; server cleanup will work after deploying the full v36 ZIP. Error: " + err.message;
-  }
-}
-$("refreshBtn").addEventListener("click", loadStats);
-$("exportBtn").addEventListener("click", exportCSV);
-$("clearBtn").addEventListener("click", clearData);
-["languageFilter","levelFilter","trackFilter","searchFilter"].forEach(id=>$(id).addEventListener("input", applyFilters));
-loadStats();
-setInterval(()=>loadStats(true), 3000);
-document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) loadStats(true); });
-</script>
+        function startFetching() {
+            fetchStats();
+            setInterval(fetchStats, 3000); // 3 saniyede bir yeniler
+        }
+    </script>
 </body>
 </html>
